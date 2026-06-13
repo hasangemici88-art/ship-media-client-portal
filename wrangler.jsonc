@@ -1,0 +1,48 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ship-media-client-portal",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    {
+      "pattern": "shipmediadigital.com/client-portal*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "shipmediadigital.com/login*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "shipmediadigital.com/api/auth*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "shipmediadigital.com/api/customers*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "www.shipmediadigital.com/client-portal*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "www.shipmediadigital.com/login*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "www.shipmediadigital.com/api/auth*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "www.shipmediadigital.com/api/customers*",
+      "zone_name": "shipmediadigital.com"
+    }
+  ]
+}

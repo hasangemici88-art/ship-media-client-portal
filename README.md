@@ -106,6 +106,39 @@ http://localhost:3000/client-portal
 5. Add a rewrite or link from the main site to `/client-portal`.
 6. Deploy.
 
+## Cloudflare Workers Deployment
+
+This project is also configured for Cloudflare Workers using the Cloudflare OpenNext adapter.
+
+The Worker routes only the portal paths, so an existing GitHub-hosted marketing website can stay on the main domain while these paths run on Cloudflare Workers:
+
+- `https://shipmediadigital.com/client-portal*`
+- `https://shipmediadigital.com/login*`
+- `https://shipmediadigital.com/api/auth*`
+- `https://shipmediadigital.com/api/customers*`
+
+In Cloudflare, connect the GitHub repository to Workers Builds or deploy with Wrangler.
+
+Build/deploy command:
+
+```bash
+npm run deploy
+```
+
+Preview command:
+
+```bash
+npm run preview
+```
+
+Required Cloudflare variables/secrets are the same values from `.env.example`. Set them in Workers & Pages > your Worker > Settings > Variables and Secrets.
+
+For production, set:
+
+```txt
+NEXTAUTH_URL=https://shipmediadigital.com
+```
+
 ## Security Notes
 
 - Keep `PORTAL_PASSWORD_HASH`, `NEXTAUTH_SECRET`, Google credentials, and webhook secret private.
