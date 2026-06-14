@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { addCustomerNote } from "@/lib/sheets";
+import { addCustomerNote } from "@/lib/db";
 
 const schema = z.object({
   body: z.string().min(2).max(1000),

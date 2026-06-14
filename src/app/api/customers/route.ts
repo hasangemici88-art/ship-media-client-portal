@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
-import { createLeadFromLivablinds, getCustomers } from "@/lib/sheets";
+import { createLeadFromLivablinds, getCustomers } from "@/lib/db";
 
 export async function GET() {
   const session = await getServerSession(authOptions);

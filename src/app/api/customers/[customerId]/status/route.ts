@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { updateCustomerStatus } from "@/lib/sheets";
+import { updateCustomerStatus } from "@/lib/db";
 import { leadStatuses } from "@/lib/types";
 
 const schema = z.object({

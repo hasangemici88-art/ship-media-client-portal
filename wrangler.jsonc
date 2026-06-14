@@ -11,6 +11,13 @@
   "observability": {
     "enabled": true
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ship-media-client-portal",
+      "database_id": "REPLACE_WITH_DB_ID_AFTER_CREATE"
+    }
+  ],
   "routes": [
     {
       "pattern": "shipmediadigital.com/client-portal*",
