@@ -84,6 +84,19 @@ Payload:
 }
 ```
 
+For the Livablinds Cloudflare Pages Function, set:
+
+```txt
+SHIP_MEDIA_PORTAL_WEBHOOK_URL=https://shipmediadigital.com/api/customers
+LIVABLINDS_WEBHOOK_SECRET=<same secret as the portal Worker>
+```
+
+The configured CRM Google Sheet is:
+
+```txt
+https://docs.google.com/spreadsheets/d/1qvRKCRNOrigNoUKHPWWstnmxQtOdvVG50zvt4TXwWqA/edit
+```
+
 ## Local Development
 
 ```bash

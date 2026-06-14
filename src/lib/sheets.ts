@@ -5,7 +5,9 @@ import { Customer, CustomerNote, LeadStatus } from "./types";
 import { isLeadStatus, parseNotes, serializeNotes } from "./utils";
 
 const sheetName = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
-const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
+const spreadsheetId =
+  process.env.GOOGLE_SHEETS_SPREADSHEET_ID ||
+  "1qvRKCRNOrigNoUKHPWWstnmxQtOdvVG50zvt4TXwWqA";
 const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
