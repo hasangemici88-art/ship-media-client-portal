@@ -15,7 +15,7 @@
     {
       "binding": "DB",
       "database_name": "ship-media-client-portal",
-      "database_id": "REPLACE_WITH_DB_ID_AFTER_CREATE"
+      "database_id": "db8fc0f4-8d3b-4d76-b4ee-a7589d220859"
     }
   ],
   "routes": [
@@ -36,6 +36,10 @@
       "zone_name": "shipmediadigital.com"
     },
     {
+      "pattern": "shipmediadigital.com/_next/*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
       "pattern": "www.shipmediadigital.com/client-portal*",
       "zone_name": "shipmediadigital.com"
     },
@@ -49,6 +53,10 @@
     },
     {
       "pattern": "www.shipmediadigital.com/api/customers*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "www.shipmediadigital.com/_next/*",
       "zone_name": "shipmediadigital.com"
     }
   ]

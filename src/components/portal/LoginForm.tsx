@@ -58,13 +58,12 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
             Livablinds leads, sales status, and internal notes in one protected workspace.
           </h2>
           <p className="mt-5 max-w-lg text-base leading-7 text-slate-300">
-            Built for fast customer lookup, clean pipeline visibility, and direct Google Sheets
-            synchronization.
+            Built for fast customer lookup, clean pipeline visibility, and real-time lead sync.
           </p>
         </div>
 
         <div className="grid grid-cols-3 gap-3 text-sm text-slate-300">
-          {["Google Sheets sync", "Encrypted password", "Protected routes"].map((item) => (
+          {["Real-time lead sync", "Encrypted password", "Protected routes"].map((item) => (
             <div key={item} className="rounded-lg border border-white/10 bg-white/5 p-4">
               {item}
             </div>

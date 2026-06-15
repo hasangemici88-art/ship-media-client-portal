@@ -272,7 +272,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
             <p className="text-sm font-medium text-sky-600 dark:text-sky-300">Livablinds CRM</p>
             <h2 className="mt-1 text-3xl font-semibold tracking-tight">Customer management dashboard</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Search leads, track the pipeline, update status, and save internal notes to Google Sheets.
+              Search leads, track the pipeline, update status, and save internal notes — synced live.
             </p>
           </div>
           <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm dark:border-white/10 dark:bg-slate-900">
