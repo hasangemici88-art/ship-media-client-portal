@@ -38,23 +38,22 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
 
   return (
     <div className="grid min-h-screen bg-slate-950 text-white lg:grid-cols-[0.95fr_1.05fr]">
-      <section className="hidden min-h-screen flex-col justify-between overflow-hidden border-r border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,.24),transparent_30%),linear-gradient(135deg,#061225,#0b1730_45%,#111827)] p-10 lg:flex">
+      <section className="hidden min-h-screen flex-col justify-between overflow-hidden border-r border-white/10 bg-[linear-gradient(135deg,#0b1220,#111827_55%,#0b1220)] p-10 lg:flex">
         <div className="flex items-center gap-3">
-          <div className="grid size-11 place-items-center rounded-lg bg-sky-400 font-black text-slate-950">
-            S
-          </div>
-          <div>
-            <p className="text-sm uppercase tracking-[0.24em] text-sky-200">Ship Media Digital</p>
-            <h1 className="text-2xl font-semibold">Client Management Portal</h1>
-          </div>
+          <img
+            src="/assets/images/Banner.png"
+            alt="Ship Media Digital"
+            className="h-11 w-auto rounded-md bg-white/95 px-2 py-1.5"
+          />
         </div>
 
         <div className="max-w-xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-300/30 bg-white/10 px-3 py-1 text-sm text-sky-100">
+          <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-3">Client Management Portal</p>
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm text-slate-200">
             <ShieldCheck size={16} />
             Secure lead operations
           </div>
-          <h2 className="text-5xl font-semibold leading-tight">
+          <h2 className="text-5xl font-semibold leading-tight text-white">
             Livablinds leads, sales status, and internal notes in one protected workspace.
           </h2>
           <p className="mt-5 max-w-lg text-base leading-7 text-slate-300">
@@ -74,20 +73,17 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
       <section className="flex min-h-screen items-center justify-center bg-slate-50 px-5 py-10 text-slate-950 dark:bg-slate-950 dark:text-white">
         <div className="w-full max-w-md">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="grid size-10 place-items-center rounded-lg bg-sky-500 font-black text-white">
-              S
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.22em] text-sky-600 dark:text-sky-300">
-                Ship Media Digital
-              </p>
-              <h1 className="font-semibold">Client Management Portal</h1>
-            </div>
+            <img
+              src="/assets/images/Banner.png"
+              alt="Ship Media Digital"
+              className="h-9 w-auto"
+            />
+            <h1 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Client Management Portal</h1>
           </div>
 
           <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-200/70 dark:border-white/10 dark:bg-slate-900 dark:shadow-black/20">
             <div className="mb-7">
-              <p className="text-sm font-medium text-sky-600 dark:text-sky-300">Authorized access</p>
+              <p className="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Authorized access</p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight">Sign in</h2>
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Use your portal email and password to access customer records.
@@ -134,7 +130,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
               {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
               <button
-                className="h-11 w-full rounded-lg bg-slate-950 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-sky-500 dark:hover:bg-sky-400"
+                className="h-11 w-full rounded-lg bg-slate-950 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
                 disabled={loading || !authConfigured}
               >
                 {loading ? "Signing in..." : "Open portal"}

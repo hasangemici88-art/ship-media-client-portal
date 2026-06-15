@@ -34,7 +34,7 @@ import { cn, customerFullName, formatDate, formatDateTime } from "@/lib/utils";
 import { useTheme } from "./ThemeProvider";
 
 const statusClasses: Record<LeadStatus, string> = {
-  "New Lead": "bg-sky-50 text-sky-700 ring-sky-100 dark:bg-sky-400/10 dark:text-sky-200 dark:ring-sky-400/20",
+  "New Lead": "bg-slate-100 text-slate-800 ring-slate-200 dark:bg-white/10 dark:text-slate-200 dark:ring-white/15",
   Called:
     "bg-indigo-50 text-indigo-700 ring-indigo-100 dark:bg-indigo-400/10 dark:text-indigo-200 dark:ring-indigo-400/20",
   Contacted:
@@ -237,14 +237,13 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-white/10 dark:bg-slate-950/90">
         <div className="flex min-h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-slate-950 font-black text-white dark:bg-sky-500">
-              S
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-sky-600 dark:text-sky-300">
-                Ship Media Digital
-              </p>
-              <h1 className="font-semibold">Client Portal</h1>
+            <img
+              src="/assets/images/Banner.png"
+              alt="Ship Media Digital"
+              className="h-9 w-auto"
+            />
+            <div className="hidden sm:block border-l border-slate-200 dark:border-white/10 pl-3">
+              <h1 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Client Portal</h1>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -256,7 +255,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button
-              className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-950 px-3 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400"
+              className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-950 px-3 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
               onClick={() => signOut({ callbackUrl: "/login" })}
             >
               <LogOut size={16} />
@@ -269,7 +268,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
       <div className="px-4 py-6 sm:px-6 lg:px-8">
         <section className="mb-6 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div>
-            <p className="text-sm font-medium text-sky-600 dark:text-sky-300">Livablinds CRM</p>
+            <p className="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Livablinds CRM</p>
             <h2 className="mt-1 text-3xl font-semibold tracking-tight">Customer management dashboard</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
               Search leads, track the pipeline, update status, and save internal notes — synced live.
@@ -286,7 +285,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
             <div key={label} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-                <Icon size={17} className="text-sky-500" />
+                <Icon size={17} className="text-slate-500 dark:text-slate-400" />
               </div>
               <p className="mt-3 text-3xl font-semibold">{value}</p>
             </div>
@@ -297,15 +296,15 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
           <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-semibold">Monthly Leads</h3>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Live from Sheet</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Live</span>
             </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={getMonthlyLeads(customers)}>
                   <defs>
                     <linearGradient id="leadFill" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.45} />
-                      <stop offset="95%" stopColor="#38bdf8" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#111827" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#111827" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,.25)" />
@@ -427,7 +426,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
                       </td>
                       <td className="px-4 py-4 text-right">
                         <button
-                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold transition hover:border-sky-300 hover:text-sky-700 dark:border-white/10 dark:hover:border-sky-400 dark:hover:text-sky-200"
+                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold transition hover:border-slate-400 hover:text-slate-900 dark:border-white/10 dark:hover:border-white/30 dark:hover:text-white"
                           onClick={() => setSelectedCustomer(customer)}
                         >
                           View Customer
@@ -443,7 +442,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
           <aside className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-semibold">Notifications</h3>
-              <Bell size={17} className="text-sky-500" />
+              <Bell size={17} className="text-slate-500 dark:text-slate-400" />
             </div>
             <div className="space-y-3">
               {buildNotifications(customers).map((notification) => (
@@ -493,7 +492,7 @@ function CustomerDrawer({
       <aside className="ml-auto flex h-full w-full max-w-xl flex-col overflow-y-auto bg-white shadow-2xl dark:bg-slate-950">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-950">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-sky-600 dark:text-sky-300">{customer.customerId}</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{customer.customerId}</p>
             <h3 className="mt-1 text-2xl font-semibold">{customerFullName(customer)}</h3>
           </div>
           <button
@@ -563,7 +562,7 @@ function CustomerDrawer({
                 ))}
               </select>
               <button
-                className="h-11 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400"
+                className="h-11 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
                 onClick={() => onStatusChange(customer, status)}
               >
                 Update
@@ -583,12 +582,12 @@ function CustomerDrawer({
               }}
             >
               <textarea
-                className="min-h-28 w-full resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm outline-none focus:border-sky-400 dark:border-white/10 dark:bg-slate-900"
+                className="min-h-28 w-full resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm outline-none focus:border-slate-400 dark:border-white/10 dark:bg-slate-900 dark:focus:border-white/30"
                 placeholder="Add an internal note..."
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
               />
-              <button className="h-10 rounded-lg bg-sky-600 px-4 text-sm font-semibold text-white transition hover:bg-sky-500">
+              <button className="h-10 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200">
                 Save Note
               </button>
             </form>
