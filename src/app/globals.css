@@ -12,11 +12,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-.dark {
-  --background: #020617;
-  --foreground: #f8fafc;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);

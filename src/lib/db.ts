@@ -1,6 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { z } from "zod";
-import { demoCustomers } from "./demo-data";
 import { Customer, CustomerNote, LeadStatus } from "./types";
 import { isLeadStatus } from "./utils";
 
@@ -158,7 +157,7 @@ async function getCustomersFromGoogleSheet(): Promise<Customer[]> {
 
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) {
-    return demoCustomers;
+    return [];
   }
 
   const rows = parseCsv(await response.text());
@@ -167,12 +166,15 @@ async function getCustomersFromGoogleSheet(): Promise<Customer[]> {
     .slice(headerIndex === -1 ? 1 : headerIndex + 1)
     .filter((row) => row.some(Boolean) && normalizeHeader(row[0]) !== "customerid");
 
-  return dataRows.length ? dataRows.map(sheetRowToCustomer) : demoCustomers;
+  return dataRows.map(sheetRowToCustomer);
 }
 
 export async function getCustomers(): Promise<Customer[]> {
+  const sheetCustomers = await getCustomersFromGoogleSheet();
+  if (sheetCustomers.length > 0) return sheetCustomers;
+
   const db = getDb();
-  if (!db) return getCustomersFromGoogleSheet();
+  if (!db) return [];
 
   const customerRes = await db
     .prepare("SELECT * FROM customers ORDER BY submission_date DESC")
@@ -190,7 +192,7 @@ export async function getCustomers(): Promise<Customer[]> {
   }
 
   if (customerRes.results.length === 0) {
-    return getCustomersFromGoogleSheet();
+    return [];
   }
 
   return customerRes.results.map((row) =>

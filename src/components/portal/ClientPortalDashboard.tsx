@@ -32,19 +32,19 @@ import { Customer, CustomerNote, LeadStatus, leadStatuses } from "@/lib/types";
 import { cn, customerFullName, formatDate, formatDateTime } from "@/lib/utils";
 
 const statusClasses: Record<LeadStatus, string> = {
-  "New Lead": "bg-sky-50 text-sky-700 ring-sky-100 dark:bg-sky-400/10 dark:text-sky-200 dark:ring-sky-400/20",
+  "New Lead": "bg-sky-50 text-sky-700 ring-sky-100",
   Called:
-    "bg-indigo-50 text-indigo-700 ring-indigo-100 dark:bg-indigo-400/10 dark:text-indigo-200 dark:ring-indigo-400/20",
+    "bg-indigo-50 text-indigo-700 ring-indigo-100",
   Contacted:
-    "bg-cyan-50 text-cyan-700 ring-cyan-100 dark:bg-cyan-400/10 dark:text-cyan-200 dark:ring-cyan-400/20",
+    "bg-cyan-50 text-cyan-700 ring-cyan-100",
   "Appointment Scheduled":
-    "bg-violet-50 text-violet-700 ring-violet-100 dark:bg-violet-400/10 dark:text-violet-200 dark:ring-violet-400/20",
+    "bg-violet-50 text-violet-700 ring-violet-100",
   "Quote Presented":
-    "bg-amber-50 text-amber-700 ring-amber-100 dark:bg-amber-400/10 dark:text-amber-100 dark:ring-amber-400/20",
+    "bg-amber-50 text-amber-700 ring-amber-100",
   "Sale Closed":
-    "bg-emerald-50 text-emerald-700 ring-emerald-100 dark:bg-emerald-400/10 dark:text-emerald-200 dark:ring-emerald-400/20",
+    "bg-emerald-50 text-emerald-700 ring-emerald-100",
   "Lost Lead":
-    "bg-rose-50 text-rose-700 ring-rose-100 dark:bg-rose-400/10 dark:text-rose-200 dark:ring-rose-400/20",
+    "bg-rose-50 text-rose-700 ring-rose-100",
 };
 
 const funnelColors = ["#38bdf8", "#818cf8", "#22d3ee", "#a78bfa", "#f59e0b", "#10b981"];
@@ -276,9 +276,9 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
           {kpis.map(({ label, value, icon: Icon }) => (
-            <div key={label} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900">
+            <div key={label} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
+                <p className="text-sm text-slate-500">{label}</p>
                 <Icon size={17} className="text-sky-500" />
               </div>
               <p className="mt-3 text-3xl font-semibold">{value}</p>
@@ -287,10 +287,10 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
         </section>
 
         <section className="mt-6 grid gap-4 xl:grid-cols-[1.6fr_1fr_1fr]">
-          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-semibold">Monthly Leads</h3>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Live from Sheet</span>
+              <span className="text-xs text-slate-500">Live from Sheet</span>
             </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -311,11 +311,11 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
             </div>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <h3 className="font-semibold">Lead Conversion Rate</h3>
             <div className="mt-6 flex items-end gap-3">
               <p className="text-6xl font-semibold tracking-tight">{conversionRate}%</p>
-              <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">closed sales</p>
+              <p className="mb-2 text-sm text-slate-500">closed sales</p>
             </div>
             <div className="mt-6 h-36">
               <ResponsiveContainer width="100%" height="100%">
@@ -328,7 +328,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
             </div>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <h3 className="font-semibold">Sales Funnel</h3>
             <div className="mt-3 h-56">
               <ResponsiveContainer width="100%" height="100%">
@@ -346,11 +346,11 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
         </section>
 
         <section className="mt-6 grid gap-4 xl:grid-cols-[1fr_320px]">
-          <div className="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-900">
-            <div className="grid gap-3 border-b border-slate-200 p-4 dark:border-white/10 lg:grid-cols-[1fr_260px]">
+          <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div className="grid gap-3 border-b border-slate-200 p-4 lg:grid-cols-[1fr_260px]">
               <label>
                 <span className="mb-2 block text-sm font-semibold">Search Customer</span>
-                <span className="flex h-11 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 dark:border-white/10 dark:bg-slate-950">
+                <span className="flex h-11 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3">
                   <Search size={18} className="text-slate-400" />
                   <input
                     className="w-full bg-transparent text-sm outline-none"
@@ -363,7 +363,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
               <label>
                 <span className="mb-2 block text-sm font-semibold">Lead Status</span>
                 <select
-                  className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm outline-none dark:border-white/10 dark:bg-slate-950"
+                  className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm outline-none"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value as LeadStatus | "All")}
                 >
@@ -381,7 +381,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
 
             <div className="overflow-x-auto">
               <table className="w-full min-w-[880px] text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-950 dark:text-slate-400">
+                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                   <tr>
                     {["Customer Name", "Phone", "Email", "Submission Date", "Service", "Assigned Staff", "Current Status", ""].map(
                       (heading) => (
@@ -392,7 +392,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
                     )}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-white/10">
+                <tbody className="divide-y divide-slate-100">
                   {loading ? (
                     <tr>
                       <td className="px-4 py-8 text-center text-slate-500" colSpan={8}>
@@ -408,19 +408,19 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
                     </tr>
                   ) : null}
                   {filteredCustomers.map((customer) => (
-                    <tr key={customer.customerId} className="transition hover:bg-slate-50 dark:hover:bg-white/5">
+                    <tr key={customer.customerId} className="transition hover:bg-slate-50">
                       <td className="px-4 py-4 font-semibold">{customerFullName(customer)}</td>
-                      <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{customer.phoneNumber}</td>
-                      <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{customer.email}</td>
-                      <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{formatDate(customer.submissionDate)}</td>
-                      <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{customer.serviceRequested}</td>
-                      <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{customer.assignedStaff}</td>
+                      <td className="px-4 py-4 text-slate-600">{customer.phoneNumber}</td>
+                      <td className="px-4 py-4 text-slate-600">{customer.email}</td>
+                      <td className="px-4 py-4 text-slate-600">{formatDate(customer.submissionDate)}</td>
+                      <td className="px-4 py-4 text-slate-600">{customer.serviceRequested}</td>
+                      <td className="px-4 py-4 text-slate-600">{customer.assignedStaff}</td>
                       <td className="px-4 py-4">
                         <StatusBadge status={customer.currentStatus} />
                       </td>
                       <td className="px-4 py-4 text-right">
                         <button
-                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold transition hover:border-sky-300 hover:text-sky-700 dark:border-white/10 dark:hover:border-sky-400 dark:hover:text-sky-200"
+                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold transition hover:border-sky-300 hover:text-sky-700"
                           onClick={() => setSelectedCustomer(customer)}
                         >
                           View Customer
@@ -433,16 +433,16 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
+          <aside className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-semibold">Notifications</h3>
               <Bell size={17} className="text-sky-500" />
             </div>
             <div className="space-y-3">
               {buildNotifications(customers).map((notification) => (
-                <div key={notification.id} className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-white/10 dark:bg-slate-950">
+                <div key={notification.id} className="rounded-lg border border-slate-100 bg-slate-50 p-3">
                   <p className="text-sm font-semibold">{notification.title}</p>
-                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{notification.detail}</p>
+                  <p className="mt-1 text-sm text-slate-500">{notification.detail}</p>
                   <p className="mt-2 text-xs text-slate-400">{formatDateTime(notification.timestamp)}</p>
                 </div>
               ))}
@@ -483,14 +483,14 @@ function CustomerDrawer({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-sm">
-      <aside className="ml-auto flex h-full w-full max-w-xl flex-col overflow-y-auto bg-white shadow-2xl dark:bg-slate-950">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-950">
+      <aside className="ml-auto flex h-full w-full max-w-xl flex-col overflow-y-auto bg-white shadow-2xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white p-5">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-sky-600 dark:text-sky-300">{customer.customerId}</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-sky-600">{customer.customerId}</p>
             <h3 className="mt-1 text-2xl font-semibold">{customerFullName(customer)}</h3>
           </div>
           <button
-            className="grid size-10 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10"
+            className="grid size-10 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-100"
             onClick={onClose}
             aria-label="Close customer panel"
           >
@@ -499,7 +499,7 @@ function CustomerDrawer({
         </div>
 
         <div className="space-y-5 p-5">
-          <section className="rounded-lg border border-slate-200 p-4 dark:border-white/10">
+          <section className="rounded-lg border border-slate-200 p-4">
             <h4 className="mb-4 font-semibold">Customer Information</h4>
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
               {[
@@ -510,30 +510,30 @@ function CustomerDrawer({
                 ["Service Requested", customer.serviceRequested],
               ].map(([label, value]) => (
                 <div key={label} className={label === "Address" ? "sm:col-span-2" : ""}>
-                  <dt className="text-slate-500 dark:text-slate-400">{label}</dt>
+                  <dt className="text-slate-500">{label}</dt>
                   <dd className="mt-1 font-medium">{value}</dd>
                 </div>
               ))}
             </dl>
           </section>
 
-          <section className="rounded-lg border border-slate-200 p-4 dark:border-white/10">
+          <section className="rounded-lg border border-slate-200 p-4">
             <h4 className="mb-4 font-semibold">Lead Information</h4>
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
               <div>
-                <dt className="text-slate-500 dark:text-slate-400">Lead Source</dt>
+                <dt className="text-slate-500">Lead Source</dt>
                 <dd className="mt-1 font-medium">{customer.leadSource}</dd>
               </div>
               <div>
-                <dt className="text-slate-500 dark:text-slate-400">Date Submitted</dt>
+                <dt className="text-slate-500">Date Submitted</dt>
                 <dd className="mt-1 font-medium">{formatDate(customer.submissionDate)}</dd>
               </div>
               <div>
-                <dt className="text-slate-500 dark:text-slate-400">Assigned Team Member</dt>
+                <dt className="text-slate-500">Assigned Team Member</dt>
                 <dd className="mt-1 font-medium">{customer.assignedStaff}</dd>
               </div>
               <div>
-                <dt className="text-slate-500 dark:text-slate-400">Current Status</dt>
+                <dt className="text-slate-500">Current Status</dt>
                 <dd className="mt-1">
                   <StatusBadge status={customer.currentStatus} />
                 </dd>
@@ -541,11 +541,11 @@ function CustomerDrawer({
             </dl>
           </section>
 
-          <section className="rounded-lg border border-slate-200 p-4 dark:border-white/10">
+          <section className="rounded-lg border border-slate-200 p-4">
             <h4 className="mb-4 font-semibold">Status Management</h4>
             <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
               <select
-                className="h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm outline-none dark:border-white/10 dark:bg-slate-900"
+                className="h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm outline-none"
                 value={status}
                 onChange={(event) => setStatus(event.target.value as LeadStatus)}
               >
@@ -556,7 +556,7 @@ function CustomerDrawer({
                 ))}
               </select>
               <button
-                className="h-11 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400"
+                className="h-11 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-sky-700"
                 onClick={() => onStatusChange(customer, status)}
               >
                 Update
@@ -564,7 +564,7 @@ function CustomerDrawer({
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 p-4 dark:border-white/10">
+          <section className="rounded-lg border border-slate-200 p-4">
             <h4 className="mb-4 font-semibold">Internal Notes</h4>
             <form
               className="space-y-3"
@@ -576,7 +576,7 @@ function CustomerDrawer({
               }}
             >
               <textarea
-                className="min-h-28 w-full resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm outline-none focus:border-sky-400 dark:border-white/10 dark:bg-slate-900"
+                className="min-h-28 w-full resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm outline-none focus:border-sky-400"
                 placeholder="Add an internal note..."
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
@@ -588,14 +588,14 @@ function CustomerDrawer({
 
             <div className="mt-5 space-y-3">
               {customer.internalNotes.length === 0 ? (
-                <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500">
                   No notes yet.
                 </p>
               ) : null}
               {customer.internalNotes.map((item) => (
-                <article key={item.id} className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-white/10 dark:bg-slate-900">
+                <article key={item.id} className="rounded-lg border border-slate-100 bg-slate-50 p-3">
                   <p className="text-sm leading-6">{item.body}</p>
-                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  <p className="mt-2 text-xs text-slate-500">
                     {item.userName} · {formatDateTime(item.timestamp)}
                   </p>
                 </article>
