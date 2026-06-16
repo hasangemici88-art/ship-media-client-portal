@@ -350,8 +350,8 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
           </div>
         </section>
 
-        <section className="mt-6 grid gap-4 xl:grid-cols-[1fr_320px]">
-          <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
+        <section className="mt-6 grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0 rounded-lg border border-slate-200 bg-white shadow-sm">
             <div className="grid gap-3 border-b border-slate-200 p-4 lg:grid-cols-[1fr_260px]">
               <label>
                 <span className="mb-2 block text-sm font-semibold">Search Customer</span>
@@ -384,7 +384,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
 
             {error ? <div className="border-b border-red-100 bg-red-50 p-3 text-sm text-red-700">{error}</div> : null}
 
-            <div className="overflow-x-auto">
+            <div className="w-full overflow-x-auto">
               <table className="w-full min-w-[880px] text-left text-sm">
                 <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                   <tr>
@@ -443,7 +443,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-4">
+          <aside className="min-w-0 rounded-lg border border-slate-200 bg-white p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-semibold">Notifications</h3>
               <Bell size={17} className="text-sky-500" />
