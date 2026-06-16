@@ -122,7 +122,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
               {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
               <button
-                className="h-11 w-full rounded-lg bg-slate-950 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="smd-btn smd-btn-primary w-full"
                 disabled={loading || !authConfigured}
               >
                 {loading ? "Signing in..." : "Open portal"}

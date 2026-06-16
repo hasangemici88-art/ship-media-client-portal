@@ -27,3 +27,94 @@ textarea {
 * {
   box-sizing: border-box;
 }
+
+.smd-btn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.smd-btn:hover {
+  transform: translateY(-2px);
+}
+
+.smd-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+.smd-btn-primary {
+  border-color: #111827;
+  background: #111827;
+  color: #ffffff;
+}
+
+.smd-btn-primary:hover {
+  background: #000000;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.smd-btn-secondary {
+  border-color: #d8dce4;
+  background: #ffffff;
+  color: #111827;
+}
+
+.smd-btn-secondary:hover {
+  border-color: #111827;
+  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.12);
+}
+
+.smd-btn-compact {
+  min-height: 40px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+.smd-icon-btn {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid #d8dce4;
+  background: #ffffff;
+  color: #6b7280;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.smd-icon-btn:hover {
+  transform: translateY(-2px);
+  border-color: #111827;
+  color: #111827;
+  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.12);
+}
+
+@media (hover: none) {
+  .smd-btn:hover,
+  .smd-icon-btn:hover {
+    transform: none;
+  }
+}

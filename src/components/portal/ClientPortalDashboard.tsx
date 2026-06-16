@@ -247,13 +247,13 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
           </div>
           <div className="flex items-center gap-2">
             <button
-              className="hidden h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 sm:inline-flex sm:items-center"
+              className="smd-btn smd-btn-secondary smd-btn-compact hidden sm:inline-flex"
               onClick={loadCustomers}
             >
               Refresh Leads
             </button>
             <button
-              className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-950 px-3 text-sm font-semibold text-white transition hover:bg-sky-700"
+              className="smd-btn smd-btn-primary smd-btn-compact"
               onClick={() => signOut({ callbackUrl: "/login" })}
             >
               <LogOut size={16} />
@@ -430,7 +430,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
                       </td>
                       <td className="px-4 py-4 text-right">
                         <button
-                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold transition hover:border-sky-300 hover:text-sky-700"
+                          className="smd-btn smd-btn-secondary smd-btn-compact"
                           onClick={() => setSelectedCustomer(customer)}
                         >
                           View Customer
@@ -500,7 +500,7 @@ function CustomerDrawer({
             <h3 className="mt-1 text-2xl font-semibold">{customerFullName(customer)}</h3>
           </div>
           <button
-            className="grid size-10 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-100"
+            className="smd-icon-btn"
             onClick={onClose}
             aria-label="Close customer panel"
           >
@@ -566,7 +566,7 @@ function CustomerDrawer({
                 ))}
               </select>
               <button
-                className="h-11 rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-sky-700"
+                className="smd-btn smd-btn-primary"
                 onClick={() => onStatusChange(customer, status)}
               >
                 Update
@@ -591,7 +591,7 @@ function CustomerDrawer({
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
               />
-              <button className="h-10 rounded-lg bg-sky-600 px-4 text-sm font-semibold text-white transition hover:bg-sky-500">
+              <button className="smd-btn smd-btn-primary smd-btn-compact">
                 Save Note
               </button>
             </form>
