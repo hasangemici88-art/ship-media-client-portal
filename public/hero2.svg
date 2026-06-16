@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Ship Media Digital growth system">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#202938"/>
+      <stop offset=".55" stop-color="#111827"/>
+      <stop offset="1" stop-color="#050813"/>
+    </linearGradient>
+    <radialGradient id="blue" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#4f8cff" stop-opacity=".75"/>
+      <stop offset=".45" stop-color="#1e63ff" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#1e63ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coral" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ff6b4a" stop-opacity=".55"/>
+      <stop offset=".5" stop-color="#ff6b4a" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#ff6b4a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="1110" cy="220" r="360" fill="url(#blue)" filter="url(#soft)"/>
+  <circle cx="320" cy="780" r="320" fill="url(#coral)" filter="url(#soft)"/>
+  <g opacity=".25" stroke="#ffffff" stroke-width="1">
+    <path d="M180 200h1240M180 360h1240M180 520h1240M180 680h1240M180 840h1240"/>
+    <path d="M260 120v760M460 120v760M660 120v760M860 120v760M1060 120v760M1260 120v760"/>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M270 705C475 405 665 610 835 375s315-150 505-18" stroke="#aad4ff" stroke-width="10" opacity=".7"/>
+    <path d="M270 705C475 405 665 610 835 375s315-150 505-18" stroke="#1e63ff" stroke-width="4"/>
+    <path d="M365 610l230 45 225-230 245 48 210-135" stroke="#ff6b4a" stroke-width="5" opacity=".8"/>
+  </g>
+  <g fill="#ffffff">
+    <circle cx="270" cy="705" r="12"/>
+    <circle cx="595" cy="655" r="12"/>
+    <circle cx="820" cy="425" r="12"/>
+    <circle cx="1065" cy="473" r="12"/>
+    <circle cx="1275" cy="338" r="12"/>
+  </g>
+  <g transform="translate(900 550)" opacity=".9">
+    <rect x="0" y="0" width="390" height="230" rx="22" fill="#ffffff" fill-opacity=".1" stroke="#ffffff" stroke-opacity=".28"/>
+    <rect x="34" y="42" width="132" height="18" rx="9" fill="#aad4ff"/>
+    <rect x="34" y="92" width="300" height="14" rx="7" fill="#ffffff" fill-opacity=".45"/>
+    <rect x="34" y="128" width="230" height="14" rx="7" fill="#ffffff" fill-opacity=".28"/>
+    <rect x="34" y="174" width="84" height="24" rx="12" fill="#ff6b4a"/>
+    <rect x="138" y="174" width="84" height="24" rx="12" fill="#1e63ff"/>
+  </g>
+</svg>

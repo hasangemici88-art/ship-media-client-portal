@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
+import Image from "next/image";
 import { LockKeyhole, Mail, ShieldCheck } from "lucide-react";
 
 export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
@@ -37,61 +38,52 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
   }
 
   return (
-    <div className="grid min-h-screen bg-slate-950 text-white lg:grid-cols-[0.95fr_1.05fr]">
-      <section className="hidden min-h-screen flex-col justify-between overflow-hidden border-r border-white/10 bg-[linear-gradient(135deg,#0b1220,#111827_55%,#0b1220)] p-10 lg:flex">
+    <div className="grid min-h-screen bg-[#f7f8fb] text-slate-950 lg:grid-cols-[0.95fr_1.05fr]">
+      <section className="hidden min-h-screen flex-col justify-between overflow-hidden border-r border-slate-200 bg-white p-10 lg:flex">
         <div className="flex items-center gap-3">
-          <img
-            src="/assets/images/Banner.png"
-            alt="Ship Media Digital"
-            className="h-11 w-auto rounded-md bg-white/95 px-2 py-1.5"
-          />
+          <Image src="/ship-media-logo.svg" alt="Ship Media Digital" width={168} height={44} priority />
         </div>
 
         <div className="max-w-xl">
-          <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-3">Client Management Portal</p>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm text-slate-200">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-700">
             <ShieldCheck size={16} />
             Secure lead operations
           </div>
-          <h2 className="text-5xl font-semibold leading-tight text-white">
+          <h2 className="text-5xl font-semibold leading-tight tracking-tight text-slate-950">
             Livablinds leads, sales status, and internal notes in one protected workspace.
           </h2>
-          <p className="mt-5 max-w-lg text-base leading-7 text-slate-300">
-            Built for fast customer lookup, clean pipeline visibility, and real-time lead sync.
+          <p className="mt-5 max-w-lg text-base leading-7 text-slate-600">
+            Built for fast customer lookup, clean pipeline visibility, and direct Google Sheets
+            synchronization.
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 text-sm text-slate-300">
-          {["Real-time lead sync", "Encrypted password", "Protected routes"].map((item) => (
-            <div key={item} className="rounded-lg border border-white/10 bg-white/5 p-4">
+        <div className="grid grid-cols-3 gap-3 text-sm font-semibold text-slate-700">
+          {["Google Sheets sync", "Encrypted password", "Protected routes"].map((item) => (
+            <div key={item} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
               {item}
             </div>
           ))}
         </div>
       </section>
 
-      <section className="flex min-h-screen items-center justify-center bg-slate-50 px-5 py-10 text-slate-950 dark:bg-slate-950 dark:text-white">
+      <section className="flex min-h-screen items-center justify-center bg-[#f7f8fb] px-5 py-10 text-slate-950">
         <div className="w-full max-w-md">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <img
-              src="/assets/images/Banner.png"
-              alt="Ship Media Digital"
-              className="h-9 w-auto"
-            />
-            <h1 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Client Management Portal</h1>
+            <Image src="/ship-media-logo.svg" alt="Ship Media Digital" width={132} height={36} priority />
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-200/70 dark:border-white/10 dark:bg-slate-900 dark:shadow-black/20">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-200/70">
             <div className="mb-7">
-              <p className="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Authorized access</p>
+              <p className="text-sm font-medium text-sky-600">Authorized access</p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight">Sign in</h2>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+              <p className="mt-2 text-sm text-slate-500">
                 Use your portal email and password to access customer records.
               </p>
             </div>
 
             {!authConfigured ? (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-100">
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                 Authentication environment variables are required before login is enabled.
               </div>
             ) : null}
@@ -99,7 +91,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
             <form className="mt-5 space-y-4" onSubmit={onSubmit}>
               <label className="block">
                 <span className="mb-2 block text-sm font-medium">Email</span>
-                <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-slate-950">
+                <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
                   <Mail size={18} className="text-slate-400" />
                   <input
                     className="w-full bg-transparent text-sm outline-none"
@@ -114,7 +106,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
 
               <label className="block">
                 <span className="mb-2 block text-sm font-medium">Password</span>
-                <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-slate-950">
+                <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
                   <LockKeyhole size={18} className="text-slate-400" />
                   <input
                     className="w-full bg-transparent text-sm outline-none"
@@ -130,7 +122,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
               {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
               <button
-                className="h-11 w-full rounded-lg bg-slate-950 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                className="h-11 w-full rounded-lg bg-slate-950 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={loading || !authConfigured}
               >
                 {loading ? "Signing in..." : "Open portal"}

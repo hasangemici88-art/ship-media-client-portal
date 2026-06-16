@@ -16,14 +16,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("smd-theme") as Theme | null;
-    const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    setTheme(stored || preferred);
+    setTheme("light");
   }, []);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    window.localStorage.setItem("smd-theme", theme);
+    document.documentElement.classList.remove("dark");
+    window.localStorage.setItem("smd-theme", "light");
   }, [theme]);
 
   const value = useMemo(

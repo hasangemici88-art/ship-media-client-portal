@@ -86,9 +86,93 @@ function noteRowToNote(row: NoteRow): CustomerNote {
   };
 }
 
+const sheetName = process.env.GOOGLE_SHEETS_TAB_NAME || "Sayfa1";
+const spreadsheetId =
+  process.env.GOOGLE_SHEETS_SPREADSHEET_ID ||
+  "1qvRKCRNOrigNoUKHPWWstnmxQtOdvVG50zvt4TXwWqA";
+
+function normalizeHeader(value: unknown) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function parseCsv(csv: string) {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+
+  for (let index = 0; index < csv.length; index += 1) {
+    const char = csv[index];
+    const next = csv[index + 1];
+
+    if (char === '"' && quoted && next === '"') {
+      cell += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === "," && !quoted) {
+      row.push(cell);
+      cell = "";
+    } else if ((char === "\n" || char === "\r") && !quoted) {
+      if (char === "\r" && next === "\n") index += 1;
+      row.push(cell);
+      if (row.some((value) => value.trim())) rows.push(row);
+      row = [];
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+
+  row.push(cell);
+  if (row.some((value) => value.trim())) rows.push(row);
+
+  return rows;
+}
+
+function sheetRowToCustomer(row: string[]): Customer {
+  const status = row[10] || "New Lead";
+
+  return {
+    customerId: row[0] || "",
+    firstName: row[1] || "",
+    lastName: row[2] || "",
+    phoneNumber: row[3] || "",
+    email: row[4] || "",
+    address: row[5] || "",
+    serviceRequested: row[6] || "",
+    leadSource: row[7] || "",
+    submissionDate: row[8] || "",
+    assignedStaff: row[9] || "Unassigned",
+    currentStatus: isLeadStatus(status) ? status : "New Lead",
+    internalNotes: [],
+  };
+}
+
+async function getCustomersFromGoogleSheet(): Promise<Customer[]> {
+  const url = new URL(`https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq`);
+  url.searchParams.set("tqx", "out:csv");
+  url.searchParams.set("sheet", sheetName);
+
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) {
+    return demoCustomers;
+  }
+
+  const rows = parseCsv(await response.text());
+  const headerIndex = rows.findIndex((row) => normalizeHeader(row[0]) === "customerid");
+  const dataRows = rows
+    .slice(headerIndex === -1 ? 1 : headerIndex + 1)
+    .filter((row) => row.some(Boolean) && normalizeHeader(row[0]) !== "customerid");
+
+  return dataRows.length ? dataRows.map(sheetRowToCustomer) : demoCustomers;
+}
+
 export async function getCustomers(): Promise<Customer[]> {
   const db = getDb();
-  if (!db) return demoCustomers;
+  if (!db) return getCustomersFromGoogleSheet();
 
   const customerRes = await db
     .prepare("SELECT * FROM customers ORDER BY submission_date DESC")
@@ -103,6 +187,10 @@ export async function getCustomers(): Promise<Customer[]> {
     const list = notesByCustomer.get(row.customer_id) ?? [];
     list.push(noteRowToNote(row));
     notesByCustomer.set(row.customer_id, list);
+  }
+
+  if (customerRes.results.length === 0) {
+    return getCustomersFromGoogleSheet();
   }
 
   return customerRes.results.map((row) =>
