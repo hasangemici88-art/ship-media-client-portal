@@ -3,8 +3,8 @@
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
-import Image from "next/image";
 import { LockKeyhole, Mail, ShieldCheck } from "lucide-react";
+import { BrandLogo } from "./BrandLogo";
 
 export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
   const router = useRouter();
@@ -41,7 +41,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
     <div className="grid min-h-screen bg-[#f7f8fb] text-slate-950 lg:grid-cols-[0.95fr_1.05fr]">
       <section className="hidden min-h-screen flex-col justify-between overflow-hidden border-r border-slate-200 bg-white p-10 lg:flex">
         <div className="flex items-center gap-3">
-          <Image src="/ship-media-logo.svg" alt="Ship Media Digital" width={168} height={44} priority />
+          <BrandLogo className="h-11 w-auto" />
         </div>
 
         <div className="max-w-xl">
@@ -70,7 +70,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
       <section className="flex min-h-screen items-center justify-center bg-[#f7f8fb] px-5 py-10 text-slate-950">
         <div className="w-full max-w-md">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <Image src="/ship-media-logo.svg" alt="Ship Media Digital" width={132} height={36} priority />
+            <BrandLogo className="h-9 w-auto" />
           </div>
 
           <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-200/70">

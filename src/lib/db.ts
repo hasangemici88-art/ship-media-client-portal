@@ -171,10 +171,8 @@ async function getCustomersFromGoogleSheet(): Promise<Customer[]> {
 
 export async function getCustomers(): Promise<Customer[]> {
   const sheetCustomers = await getCustomersFromGoogleSheet();
-  if (sheetCustomers.length > 0) return sheetCustomers;
-
   const db = getDb();
-  if (!db) return [];
+  if (!db) return sheetCustomers;
 
   const customerRes = await db
     .prepare("SELECT * FROM customers ORDER BY submission_date DESC")
@@ -191,12 +189,25 @@ export async function getCustomers(): Promise<Customer[]> {
     notesByCustomer.set(row.customer_id, list);
   }
 
-  if (customerRes.results.length === 0) {
-    return [];
+  const dbCustomers = customerRes.results.map((row) =>
+    rowToCustomer(row, notesByCustomer.get(row.customer_id) ?? []),
+  );
+  const merged = new Map<string, Customer>();
+
+  for (const customer of dbCustomers) {
+    merged.set(customer.customerId, customer);
   }
 
-  return customerRes.results.map((row) =>
-    rowToCustomer(row, notesByCustomer.get(row.customer_id) ?? []),
+  for (const customer of sheetCustomers) {
+    const existing = merged.get(customer.customerId);
+    merged.set(customer.customerId, {
+      ...customer,
+      internalNotes: existing?.internalNotes.length ? existing.internalNotes : customer.internalNotes,
+    });
+  }
+
+  return [...merged.values()].sort(
+    (a, b) => new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime(),
   );
 }
 

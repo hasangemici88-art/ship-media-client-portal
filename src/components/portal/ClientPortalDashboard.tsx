@@ -24,12 +24,12 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import { demoNotifications } from "@/lib/demo-data";
 import { Customer, CustomerNote, LeadStatus, leadStatuses } from "@/lib/types";
 import { cn, customerFullName, formatDate, formatDateTime } from "@/lib/utils";
+import { BrandLogo } from "./BrandLogo";
 
 const statusClasses: Record<LeadStatus, string> = {
   "New Lead": "bg-sky-50 text-sky-700 ring-sky-100",
@@ -55,6 +55,11 @@ function StatusBadge({ status }: { status: LeadStatus }) {
       {status}
     </span>
   );
+}
+
+function displayValue(value: string) {
+  const trimmed = value.trim();
+  return trimmed && trimmed !== "—" ? trimmed : "Not captured";
 }
 
 function getMonthlyLeads(customers: Customer[]) {
@@ -236,7 +241,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="flex min-h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <Image src="/ship-media-logo.svg" alt="Ship Media Digital" width={148} height={40} priority />
+            <BrandLogo className="h-10 w-auto" />
             <span className="hidden h-6 w-px bg-slate-200 sm:block" />
             <h1 className="hidden text-sm font-semibold text-slate-700 sm:block">Client Portal</h1>
           </div>
@@ -409,12 +414,17 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
                   ) : null}
                   {filteredCustomers.map((customer) => (
                     <tr key={customer.customerId} className="transition hover:bg-slate-50">
-                      <td className="px-4 py-4 font-semibold">{customerFullName(customer)}</td>
-                      <td className="px-4 py-4 text-slate-600">{customer.phoneNumber}</td>
-                      <td className="px-4 py-4 text-slate-600">{customer.email}</td>
+                      <td className="px-4 py-4">
+                        <p className="font-semibold">{customerFullName(customer)}</p>
+                        {customer.address ? (
+                          <p className="mt-1 text-xs text-slate-500">{displayValue(customer.address)}</p>
+                        ) : null}
+                      </td>
+                      <td className="px-4 py-4 text-slate-600">{displayValue(customer.phoneNumber)}</td>
+                      <td className="px-4 py-4 text-slate-600">{displayValue(customer.email)}</td>
                       <td className="px-4 py-4 text-slate-600">{formatDate(customer.submissionDate)}</td>
-                      <td className="px-4 py-4 text-slate-600">{customer.serviceRequested}</td>
-                      <td className="px-4 py-4 text-slate-600">{customer.assignedStaff}</td>
+                      <td className="px-4 py-4 text-slate-600">{displayValue(customer.serviceRequested)}</td>
+                      <td className="px-4 py-4 text-slate-600">{displayValue(customer.assignedStaff)}</td>
                       <td className="px-4 py-4">
                         <StatusBadge status={customer.currentStatus} />
                       </td>
@@ -504,10 +514,10 @@ function CustomerDrawer({
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
               {[
                 ["Full Name", customerFullName(customer)],
-                ["Phone", customer.phoneNumber],
-                ["Email", customer.email],
-                ["Address", customer.address],
-                ["Service Requested", customer.serviceRequested],
+                ["Phone", displayValue(customer.phoneNumber)],
+                ["Email", displayValue(customer.email)],
+                ["Address", displayValue(customer.address)],
+                ["Service Requested", displayValue(customer.serviceRequested)],
               ].map(([label, value]) => (
                 <div key={label} className={label === "Address" ? "sm:col-span-2" : ""}>
                   <dt className="text-slate-500">{label}</dt>
@@ -522,7 +532,7 @@ function CustomerDrawer({
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
               <div>
                 <dt className="text-slate-500">Lead Source</dt>
-                <dd className="mt-1 font-medium">{customer.leadSource}</dd>
+                <dd className="mt-1 font-medium">{displayValue(customer.leadSource)}</dd>
               </div>
               <div>
                 <dt className="text-slate-500">Date Submitted</dt>
@@ -530,7 +540,7 @@ function CustomerDrawer({
               </div>
               <div>
                 <dt className="text-slate-500">Assigned Team Member</dt>
-                <dd className="mt-1 font-medium">{customer.assignedStaff}</dd>
+                <dd className="mt-1 font-medium">{displayValue(customer.assignedStaff)}</dd>
               </div>
               <div>
                 <dt className="text-slate-500">Current Status</dt>
