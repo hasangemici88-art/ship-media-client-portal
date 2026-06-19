@@ -3,7 +3,10 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 function authIsConfigured() {
-  return Boolean(process.env.PORTAL_ADMIN_EMAIL && process.env.PORTAL_PASSWORD_HASH);
+  return Boolean(
+    (process.env.PORTAL_ADMIN_USERNAME || process.env.PORTAL_ADMIN_EMAIL) &&
+      process.env.PORTAL_PASSWORD_HASH,
+  );
 }
 
 export const authOptions: NextAuthOptions = {
@@ -18,7 +21,7 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Ship Media Digital Portal",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -26,12 +29,16 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const email = credentials?.email?.toLowerCase().trim();
+        const login = credentials?.email?.toLowerCase().trim();
         const password = credentials?.password || "";
+        const allowedUsername = process.env.PORTAL_ADMIN_USERNAME?.toLowerCase();
         const allowedEmail = process.env.PORTAL_ADMIN_EMAIL?.toLowerCase();
         const passwordHash = process.env.PORTAL_PASSWORD_HASH;
+        const loginMatches = allowedUsername
+          ? login === allowedUsername
+          : login === allowedEmail;
 
-        if (!email || !passwordHash || email !== allowedEmail) {
+        if (!login || !passwordHash || !loginMatches) {
           return null;
         }
 
@@ -42,7 +49,7 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: "ship-media-digital-owner",
-          email: allowedEmail,
+          email: allowedEmail || `${allowedUsername}@shipmediadigital.com`,
           name: process.env.PORTAL_ADMIN_NAME || "Ship Media Digital",
         };
       },
