@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { z } from "zod";
+import { PortalActor } from "./permissions";
 import { Customer, CustomerNote, LeadStatus } from "./types";
 import { isLeadStatus } from "./utils";
 
@@ -57,6 +58,46 @@ type NoteRow = {
   user_name: string;
   created_at: string;
 };
+
+type DeletedCustomerRow = {
+  customer_id: string;
+};
+
+async function ensureControlTables(db: D1Like) {
+  await db
+    .prepare(
+      `CREATE TABLE IF NOT EXISTS deleted_customers (
+        customer_id TEXT PRIMARY KEY,
+        deleted_by_email TEXT NOT NULL,
+        deleted_by_role TEXT NOT NULL,
+        deleted_at TEXT NOT NULL DEFAULT (datetime('now')),
+        reason TEXT NOT NULL DEFAULT 'Owner deleted customer from Client Portal'
+      )`,
+    )
+    .run();
+
+  await db
+    .prepare(
+      `CREATE TABLE IF NOT EXISTS audit_logs (
+        id TEXT PRIMARY KEY,
+        event_type TEXT NOT NULL,
+        customer_id TEXT,
+        actor_email TEXT NOT NULL,
+        actor_role TEXT NOT NULL,
+        details TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+    )
+    .run();
+
+  await db
+    .prepare("CREATE INDEX IF NOT EXISTS idx_audit_logs_customer ON audit_logs(customer_id, created_at DESC)")
+    .run();
+
+  await db
+    .prepare("CREATE INDEX IF NOT EXISTS idx_audit_logs_event ON audit_logs(event_type, created_at DESC)")
+    .run();
+}
 
 function rowToCustomer(row: CustomerRow, notes: CustomerNote[]): Customer {
   const status = row.current_status || "New Lead";
@@ -174,8 +215,19 @@ export async function getCustomers(): Promise<Customer[]> {
   const db = getDb();
   if (!db) return sheetCustomers;
 
+  await ensureControlTables(db);
+
+  const deletedRes = await db
+    .prepare("SELECT customer_id FROM deleted_customers")
+    .all<DeletedCustomerRow>();
+  const deletedCustomerIds = new Set(deletedRes.results.map((row) => row.customer_id));
+
   const customerRes = await db
-    .prepare("SELECT * FROM customers ORDER BY submission_date DESC")
+    .prepare(
+      `SELECT * FROM customers
+       WHERE customer_id NOT IN (SELECT customer_id FROM deleted_customers)
+       ORDER BY submission_date DESC`,
+    )
     .all<CustomerRow>();
 
   const noteRes = await db
@@ -198,7 +250,7 @@ export async function getCustomers(): Promise<Customer[]> {
     merged.set(customer.customerId, customer);
   }
 
-  for (const customer of sheetCustomers) {
+  for (const customer of sheetCustomers.filter((item) => !deletedCustomerIds.has(item.customerId))) {
     const existing = merged.get(customer.customerId);
     merged.set(customer.customerId, {
       ...customer,
@@ -209,6 +261,66 @@ export async function getCustomers(): Promise<Customer[]> {
   return [...merged.values()].sort(
     (a, b) => new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime(),
   );
+}
+
+async function writeAuditLog(
+  db: D1Like,
+  eventType: string,
+  customerId: string,
+  actor: PortalActor,
+  details: Record<string, unknown>,
+) {
+  await ensureControlTables(db);
+
+  await db
+    .prepare(
+      `INSERT INTO audit_logs (id, event_type, customer_id, actor_email, actor_role, details, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      crypto.randomUUID(),
+      eventType,
+      customerId,
+      actor.email,
+      actor.role,
+      JSON.stringify(details),
+      new Date().toISOString(),
+    )
+    .run();
+}
+
+async function upsertCustomerSnapshot(db: D1Like, customer: Customer) {
+  await db
+    .prepare(
+      `INSERT INTO customers (customer_id, first_name, last_name, phone_number, email, address, service_requested, lead_source, submission_date, assigned_staff, current_status, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+       ON CONFLICT(customer_id) DO UPDATE SET
+         first_name = excluded.first_name,
+         last_name = excluded.last_name,
+         phone_number = excluded.phone_number,
+         email = excluded.email,
+         address = excluded.address,
+         service_requested = excluded.service_requested,
+         lead_source = excluded.lead_source,
+         submission_date = excluded.submission_date,
+         assigned_staff = excluded.assigned_staff,
+         current_status = excluded.current_status,
+         updated_at = datetime('now')`,
+    )
+    .bind(
+      customer.customerId,
+      customer.firstName || "—",
+      customer.lastName || "—",
+      customer.phoneNumber || "—",
+      customer.email || "—",
+      customer.address || "—",
+      customer.serviceRequested || "—",
+      customer.leadSource || "Livablinds.com",
+      customer.submissionDate || new Date().toISOString(),
+      customer.assignedStaff || "Unassigned",
+      customer.currentStatus,
+    )
+    .run();
 }
 
 export async function createLeadFromLivablinds(input: unknown): Promise<Customer> {
@@ -258,9 +370,13 @@ export async function createLeadFromLivablinds(input: unknown): Promise<Customer
   return customer;
 }
 
-export async function updateCustomerStatus(customerId: string, status: LeadStatus) {
+export async function updateCustomerStatus(customerId: string, status: LeadStatus, snapshot?: Customer) {
   const db = getDb();
   if (!db) return { customerId, status };
+
+  if (snapshot) {
+    await upsertCustomerSnapshot(db, { ...snapshot, currentStatus: status });
+  }
 
   const result = await db
     .prepare(
@@ -276,9 +392,59 @@ export async function updateCustomerStatus(customerId: string, status: LeadStatu
   return { customerId, status };
 }
 
-export async function addCustomerNote(customerId: string, note: CustomerNote) {
+export async function deleteCustomer(customerId: string, actor: PortalActor) {
+  const db = getDb();
+  if (!db) {
+    throw new Error("Database is not configured.");
+  }
+
+  await ensureControlTables(db);
+
+  const existing = await db
+    .prepare("SELECT * FROM customers WHERE customer_id = ?")
+    .bind(customerId)
+    .first<CustomerRow>();
+
+  await writeAuditLog(db, "customer.deleted", customerId, actor, {
+    customer: existing
+      ? {
+          customerId: existing.customer_id,
+          firstName: existing.first_name,
+          lastName: existing.last_name,
+          email: existing.email,
+          phoneNumber: existing.phone_number,
+        }
+      : null,
+    source: existing ? "d1" : "sheet-or-external",
+  });
+
+  await db
+    .prepare(
+      `INSERT OR REPLACE INTO deleted_customers (customer_id, deleted_by_email, deleted_by_role, deleted_at, reason)
+       VALUES (?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      customerId,
+      actor.email,
+      actor.role,
+      new Date().toISOString(),
+      "Owner deleted customer from Client Portal",
+    )
+    .run();
+
+  await db.prepare("DELETE FROM customer_notes WHERE customer_id = ?").bind(customerId).run();
+  await db.prepare("DELETE FROM customers WHERE customer_id = ?").bind(customerId).run();
+
+  return { customerId, deleted: true };
+}
+
+export async function addCustomerNote(customerId: string, note: CustomerNote, snapshot?: Customer) {
   const db = getDb();
   if (!db) return note;
+
+  if (snapshot) {
+    await upsertCustomerSnapshot(db, snapshot);
+  }
 
   const exists = await db
     .prepare("SELECT customer_id FROM customers WHERE customer_id = ?")

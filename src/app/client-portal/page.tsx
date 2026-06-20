@@ -10,5 +10,10 @@ export default async function ClientPortalPage() {
     redirect("/login");
   }
 
-  return <ClientPortalDashboard userName={session.user?.name || "Portal user"} />;
+  return (
+    <ClientPortalDashboard
+      userName={session.user?.name || "Portal user"}
+      role={session.user?.role || "Owner"}
+    />
+  );
 }

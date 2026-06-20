@@ -3,12 +3,31 @@ export const leadStatuses = [
   "Called",
   "Contacted",
   "Appointment Scheduled",
+  "Quote Sent",
   "Quote Presented",
+  "Sale Completed",
   "Sale Closed",
   "Lost Lead",
 ] as const;
 
 export type LeadStatus = (typeof leadStatuses)[number];
+
+export type UserRole = "Owner" | "Customer";
+
+export const customerAllowedStatuses = [
+  "Called",
+  "Contacted",
+  "Appointment Scheduled",
+  "Quote Sent",
+  "Sale Completed",
+] as const satisfies readonly LeadStatus[];
+
+export type PortalUser = {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+};
 
 export type CustomerNote = {
   id: string;

@@ -3,13 +3,13 @@
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { LockKeyhole, ShieldCheck, UserRound } from "lucide-react";
+import { LockKeyhole, Mail, ShieldCheck } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 
 export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
     setError("");
 
     const result = await signIn("credentials", {
-      email: username,
+      email,
       password,
       redirect: false,
       callbackUrl,
@@ -78,7 +78,7 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
               <p className="text-sm font-medium text-sky-600">Authorized access</p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight">Sign in</h2>
               <p className="mt-2 text-sm text-slate-500">
-                Use your portal username and password to access customer records.
+                Use your portal email and password to access customer records.
               </p>
             </div>
 
@@ -90,15 +90,15 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
 
             <form className="mt-5 space-y-4" onSubmit={onSubmit}>
               <label className="block">
-                <span className="mb-2 block text-sm font-medium">Username</span>
+                <span className="mb-2 block text-sm font-medium">Email</span>
                 <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
-                  <UserRound size={18} className="text-slate-400" />
+                  <Mail size={18} className="text-slate-400" />
                   <input
                     className="w-full bg-transparent text-sm outline-none"
-                    type="text"
-                    autoComplete="username"
-                    value={username}
-                    onChange={(event) => setUsername(event.target.value)}
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
                     required
                   />
                 </span>

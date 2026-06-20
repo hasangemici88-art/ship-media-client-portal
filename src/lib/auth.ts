@@ -1,12 +1,52 @@
 import bcrypt from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { PortalUser, UserRole } from "./types";
+
+type ConfiguredUser = PortalUser & {
+  passwordHash: string;
+};
 
 function authIsConfigured() {
-  return Boolean(
-    (process.env.PORTAL_ADMIN_USERNAME || process.env.PORTAL_ADMIN_EMAIL) &&
-      process.env.PORTAL_PASSWORD_HASH,
-  );
+  return getConfiguredUsers().length > 0;
+}
+
+function normalizeRole(value: unknown): UserRole {
+  return value === "Customer" ? "Customer" : "Owner";
+}
+
+function getConfiguredUsers(): ConfiguredUser[] {
+  const usersJson = process.env.PORTAL_USERS_JSON;
+  if (usersJson) {
+    try {
+      const parsed = JSON.parse(usersJson) as Array<Record<string, unknown>>;
+      return parsed
+        .map((item) => ({
+          id: String(item.id || item.email || crypto.randomUUID()),
+          email: String(item.email || "").toLowerCase().trim(),
+          name: String(item.name || item.email || "Portal user"),
+          role: normalizeRole(item.role),
+          passwordHash: String(item.passwordHash || ""),
+        }))
+        .filter((item) => item.email && item.passwordHash);
+    } catch {
+      return [];
+    }
+  }
+
+  const legacyEmail = process.env.PORTAL_ADMIN_EMAIL?.toLowerCase().trim();
+  const legacyHash = process.env.PORTAL_PASSWORD_HASH;
+  if (!legacyEmail || !legacyHash) return [];
+
+  return [
+    {
+      id: "ship-media-digital-owner",
+      email: legacyEmail,
+      name: process.env.PORTAL_ADMIN_NAME || "Ship Media Digital",
+      role: "Owner",
+      passwordHash: legacyHash,
+    },
+  ];
 }
 
 export const authOptions: NextAuthOptions = {
@@ -21,7 +61,7 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Ship Media Digital Portal",
       credentials: {
-        email: { label: "Username", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -29,28 +69,24 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const login = credentials?.email?.toLowerCase().trim();
+        const email = credentials?.email?.toLowerCase().trim();
         const password = credentials?.password || "";
-        const allowedUsername = process.env.PORTAL_ADMIN_USERNAME?.toLowerCase();
-        const allowedEmail = process.env.PORTAL_ADMIN_EMAIL?.toLowerCase();
-        const passwordHash = process.env.PORTAL_PASSWORD_HASH;
-        const loginMatches = allowedUsername
-          ? login === allowedUsername
-          : login === allowedEmail;
+        const user = getConfiguredUsers().find((item) => item.email === email);
 
-        if (!login || !passwordHash || !loginMatches) {
+        if (!email || !user) {
           return null;
         }
 
-        const passwordMatches = await bcrypt.compare(password, passwordHash);
+        const passwordMatches = await bcrypt.compare(password, user.passwordHash);
         if (!passwordMatches) {
           return null;
         }
 
         return {
-          id: "ship-media-digital-owner",
-          email: allowedEmail || `${allowedUsername}@shipmediadigital.com`,
-          name: process.env.PORTAL_ADMIN_NAME || "Ship Media Digital",
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
         };
       },
     }),
@@ -60,6 +96,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.name = user.name;
         token.email = user.email;
+        token.role = (user as PortalUser).role;
       }
 
       return token;
@@ -68,6 +105,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.role = token.role as UserRole;
       }
 
       return session;

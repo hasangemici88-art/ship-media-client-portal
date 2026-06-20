@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { createLeadFromLivablinds, getCustomers } from "@/lib/db";
+import { actorFromSession, canViewCustomer } from "@/lib/permissions";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -9,8 +10,13 @@ export async function GET() {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
+  const actor = actorFromSession(session);
+  if (!actor) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
   const customers = await getCustomers();
-  return NextResponse.json({ customers });
+  return NextResponse.json({ customers: customers.filter((customer) => canViewCustomer(actor, customer)) });
 }
 
 export async function POST(request: Request) {

@@ -1,16 +1,11 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { addCustomerNote, getCustomers } from "@/lib/db";
-import { actorFromSession, canAddNotes, canViewCustomer } from "@/lib/permissions";
+import { deleteCustomer, getCustomers } from "@/lib/db";
+import { actorFromSession, canDeleteCustomers, canViewCustomer } from "@/lib/permissions";
 
-const schema = z.object({
-  body: z.string().min(2).max(1000),
-});
-
-export async function POST(
-  request: Request,
+export async function DELETE(
+  _request: Request,
   { params }: { params: Promise<{ customerId: string }> },
 ) {
   const session = await getServerSession(authOptions);
@@ -19,7 +14,7 @@ export async function POST(
   }
 
   const actor = actorFromSession(session);
-  if (!actor || !canAddNotes(actor)) {
+  if (!canDeleteCustomers(actor)) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
@@ -29,17 +24,10 @@ export async function POST(
     return NextResponse.json({ message: "Customer not found" }, { status: 404 });
   }
 
-  if (!canViewCustomer(actor, customer)) {
+  if (!canViewCustomer(actor!, customer)) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
-  const payload = schema.parse(await request.json());
-  const note = await addCustomerNote(customerId, {
-    id: crypto.randomUUID(),
-    body: payload.body,
-    userName: session.user?.name || session.user?.email || "Portal user",
-    timestamp: new Date().toISOString(),
-  }, customer);
-
-  return NextResponse.json({ note }, { status: 201 });
+  const result = await deleteCustomer(customerId, actor!);
+  return NextResponse.json(result);
 }

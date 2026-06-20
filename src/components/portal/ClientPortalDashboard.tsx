@@ -21,13 +21,14 @@ import {
   CircleDollarSign,
   LogOut,
   Search,
+  Trash2,
   UserRound,
   X,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import { demoNotifications } from "@/lib/demo-data";
-import { Customer, CustomerNote, LeadStatus, leadStatuses } from "@/lib/types";
+import { Customer, CustomerNote, customerAllowedStatuses, LeadStatus, leadStatuses, UserRole } from "@/lib/types";
 import { cn, customerFullName, formatDate, formatDateTime } from "@/lib/utils";
 import { BrandLogo } from "./BrandLogo";
 
@@ -39,8 +40,12 @@ const statusClasses: Record<LeadStatus, string> = {
     "bg-cyan-50 text-cyan-700 ring-cyan-100",
   "Appointment Scheduled":
     "bg-violet-50 text-violet-700 ring-violet-100",
+  "Quote Sent":
+    "bg-amber-50 text-amber-700 ring-amber-100",
   "Quote Presented":
     "bg-amber-50 text-amber-700 ring-amber-100",
+  "Sale Completed":
+    "bg-emerald-50 text-emerald-700 ring-emerald-100",
   "Sale Closed":
     "bg-emerald-50 text-emerald-700 ring-emerald-100",
   "Lost Lead":
@@ -89,7 +94,7 @@ function buildNotifications(customers: Customer[]) {
     }));
 
   const closed = customers
-    .filter((customer) => customer.currentStatus === "Sale Closed")
+    .filter((customer) => ["Sale Completed", "Sale Closed"].includes(customer.currentStatus))
     .slice(0, 1)
     .map((customer) => ({
       id: `sale-${customer.customerId}`,
@@ -102,13 +107,21 @@ function buildNotifications(customers: Customer[]) {
   return [...newest, ...closed, ...demoNotifications].slice(0, 4);
 }
 
-export function ClientPortalDashboard({ userName }: { userName: string }) {
+export function ClientPortalDashboard({
+  userName,
+  role,
+}: {
+  userName: string;
+  role: UserRole;
+}) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<LeadStatus | "All">("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const isOwner = role === "Owner";
+  const visibleStatuses = isOwner ? leadStatuses : customerAllowedStatuses;
 
   async function loadCustomers() {
     setLoading(true);
@@ -153,19 +166,21 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
   const kpis = useMemo(() => {
     const count = (status: LeadStatus) =>
       customers.filter((customer) => customer.currentStatus === status).length;
+    const countAny = (statuses: LeadStatus[]) =>
+      customers.filter((customer) => statuses.includes(customer.currentStatus)).length;
 
     return [
       { label: "Total Leads", value: customers.length, icon: UserRound },
       { label: "Called", value: count("Called"), icon: Bell },
       { label: "Contacted", value: count("Contacted"), icon: CheckCircle2 },
       { label: "Appointments", value: count("Appointment Scheduled"), icon: ChevronRight },
-      { label: "Quotes Sent", value: count("Quote Presented"), icon: CircleDollarSign },
-      { label: "Sales Closed", value: count("Sale Closed"), icon: CheckCircle2 },
+      { label: "Quotes Sent", value: countAny(["Quote Sent", "Quote Presented"]), icon: CircleDollarSign },
+      { label: "Sales Closed", value: countAny(["Sale Completed", "Sale Closed"]), icon: CheckCircle2 },
     ];
   }, [customers]);
 
   const conversionRate = customers.length
-    ? Math.round((customers.filter((customer) => customer.currentStatus === "Sale Closed").length / customers.length) * 100)
+    ? Math.round((customers.filter((customer) => ["Sale Completed", "Sale Closed"].includes(customer.currentStatus)).length / customers.length) * 100)
     : 0;
 
   const funnelData = [
@@ -174,20 +189,20 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
     {
       name: "Contacted",
       value: customers.filter((customer) =>
-        ["Contacted", "Appointment Scheduled", "Quote Presented", "Sale Closed"].includes(customer.currentStatus),
+        ["Contacted", "Appointment Scheduled", "Quote Sent", "Quote Presented", "Sale Completed", "Sale Closed"].includes(customer.currentStatus),
       ).length,
     },
     {
       name: "Appointments",
       value: customers.filter((customer) =>
-        ["Appointment Scheduled", "Quote Presented", "Sale Closed"].includes(customer.currentStatus),
+        ["Appointment Scheduled", "Quote Sent", "Quote Presented", "Sale Completed", "Sale Closed"].includes(customer.currentStatus),
       ).length,
     },
     {
       name: "Quotes",
-      value: customers.filter((customer) => ["Quote Presented", "Sale Closed"].includes(customer.currentStatus)).length,
+      value: customers.filter((customer) => ["Quote Sent", "Quote Presented", "Sale Completed", "Sale Closed"].includes(customer.currentStatus)).length,
     },
-    { name: "Closed", value: customers.filter((customer) => customer.currentStatus === "Sale Closed").length },
+    { name: "Closed", value: customers.filter((customer) => ["Sale Completed", "Sale Closed"].includes(customer.currentStatus)).length },
   ];
 
   function updateCustomerLocally(customerId: string, updates: Partial<Customer>) {
@@ -215,6 +230,10 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
   }
 
   async function addNote(customer: Customer, body: string) {
+    if (!isOwner) {
+      setError("Only Owner users can add internal notes.");
+      return;
+    }
     const optimisticNote: CustomerNote = {
       id: crypto.randomUUID(),
       body,
@@ -233,6 +252,26 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
 
     if (!response.ok) {
       setError("Note could not be synchronized. Please retry.");
+    }
+  }
+
+  async function deleteCustomer(customer: Customer) {
+    if (!isOwner) return;
+
+    const confirmed = window.confirm("Are you sure you want to permanently delete this customer?");
+    if (!confirmed) return;
+
+    const previousCustomers = customers;
+    setCustomers((current) => current.filter((item) => item.customerId !== customer.customerId));
+    setSelectedCustomer(null);
+
+    const response = await fetch(`/api/customers/${customer.customerId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      setCustomers(previousCustomers);
+      setError("Customer could not be deleted. Please retry.");
     }
   }
 
@@ -276,6 +315,9 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
           <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm">
             <span className="text-slate-500">Signed in as </span>
             <strong>{userName}</strong>
+            <span className="ml-2 rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">
+              {role}
+            </span>
           </div>
         </section>
 
@@ -373,7 +415,7 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
                   onChange={(event) => setStatusFilter(event.target.value as LeadStatus | "All")}
                 >
                   <option value="All">All Statuses</option>
-                  {leadStatuses.map((status) => (
+                  {visibleStatuses.map((status) => (
                     <option key={status} value={status}>
                       {status}
                     </option>
@@ -467,6 +509,10 @@ export function ClientPortalDashboard({ userName }: { userName: string }) {
           onClose={() => setSelectedCustomer(null)}
           onStatusChange={updateStatus}
           onAddNote={addNote}
+          onDelete={deleteCustomer}
+          canDelete={isOwner}
+          canAddNotes={isOwner}
+          allowedStatuses={visibleStatuses}
         />
       ) : null}
     </main>
@@ -478,11 +524,19 @@ function CustomerDrawer({
   onClose,
   onStatusChange,
   onAddNote,
+  onDelete,
+  canDelete,
+  canAddNotes,
+  allowedStatuses,
 }: {
   customer: Customer;
   onClose: () => void;
   onStatusChange: (customer: Customer, status: LeadStatus) => Promise<void>;
   onAddNote: (customer: Customer, body: string) => Promise<void>;
+  onDelete: (customer: Customer) => Promise<void>;
+  canDelete: boolean;
+  canAddNotes: boolean;
+  allowedStatuses: readonly LeadStatus[];
 }) {
   const [status, setStatus] = useState<LeadStatus>(customer.currentStatus);
   const [note, setNote] = useState("");
@@ -499,13 +553,24 @@ function CustomerDrawer({
             <p className="text-xs uppercase tracking-[0.18em] text-sky-600">{customer.customerId}</p>
             <h3 className="mt-1 text-2xl font-semibold">{customerFullName(customer)}</h3>
           </div>
-          <button
-            className="smd-icon-btn"
-            onClick={onClose}
-            aria-label="Close customer panel"
-          >
-            <X size={19} />
-          </button>
+          <div className="flex items-center gap-2">
+            {canDelete ? (
+              <button
+                className="smd-btn smd-btn-secondary smd-btn-compact text-red-600 hover:border-red-200 hover:text-red-700"
+                onClick={() => onDelete(customer)}
+              >
+                <Trash2 size={16} />
+                Delete Customer
+              </button>
+            ) : null}
+            <button
+              className="smd-icon-btn"
+              onClick={onClose}
+              aria-label="Close customer panel"
+            >
+              <X size={19} />
+            </button>
+          </div>
         </div>
 
         <div className="space-y-5 p-5">
@@ -559,7 +624,7 @@ function CustomerDrawer({
                 value={status}
                 onChange={(event) => setStatus(event.target.value as LeadStatus)}
               >
-                {leadStatuses.map((item) => (
+                {allowedStatuses.map((item) => (
                   <option key={item} value={item}>
                     {item}
                   </option>
@@ -574,6 +639,7 @@ function CustomerDrawer({
             </div>
           </section>
 
+          {canAddNotes ? (
           <section className="rounded-lg border border-slate-200 p-4">
             <h4 className="mb-4 font-semibold">Internal Notes</h4>
             <form
@@ -612,6 +678,7 @@ function CustomerDrawer({
               ))}
             </div>
           </section>
+          ) : null}
         </div>
       </aside>
     </div>
