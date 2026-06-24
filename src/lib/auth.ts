@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { getPortalUserOverride } from "./portal-users";
 import { PortalUser, UserRole } from "./types";
 
 type ConfiguredUser = PortalUser & {
@@ -77,7 +78,15 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+        // Identity (id, email, role) always flows from PORTAL_USERS_JSON.
+        // Password and display name can be overridden by a D1 row written
+        // by the forgot/reset-password flow — that's what lets users change
+        // their password without redeploying.
+        const override = await getPortalUserOverride(email).catch(() => null);
+        const effectiveHash = override?.password_hash || user.passwordHash;
+        const effectiveName = override?.name || user.name;
+
+        const passwordMatches = await bcrypt.compare(password, effectiveHash);
         if (!passwordMatches) {
           return null;
         }
@@ -85,7 +94,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
+          name: effectiveName,
           role: user.role,
         };
       },
@@ -114,3 +123,13 @@ export const authOptions: NextAuthOptions = {
 };
 
 export { authIsConfigured };
+
+/**
+ * Public lookup for the JSON identity list. The forgot/reset routes use
+ * this so they treat PORTAL_USERS_JSON as the single source of truth for
+ * "is this email a portal user, and what role do they have?".
+ */
+export function findConfiguredUser(email: string): ConfiguredUser | undefined {
+  const normalized = email.toLowerCase().trim();
+  return getConfiguredUsers().find((item) => item.email === normalized);
+}

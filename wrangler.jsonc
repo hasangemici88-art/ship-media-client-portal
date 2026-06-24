@@ -28,6 +28,14 @@
       "zone_name": "shipmediadigital.com"
     },
     {
+      "pattern": "shipmediadigital.com/forgot-password*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "shipmediadigital.com/reset-password*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
       "pattern": "shipmediadigital.com/api/auth*",
       "zone_name": "shipmediadigital.com"
     },
@@ -45,6 +53,14 @@
     },
     {
       "pattern": "www.shipmediadigital.com/login*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "www.shipmediadigital.com/forgot-password*",
+      "zone_name": "shipmediadigital.com"
+    },
+    {
+      "pattern": "www.shipmediadigital.com/reset-password*",
       "zone_name": "shipmediadigital.com"
     },
     {

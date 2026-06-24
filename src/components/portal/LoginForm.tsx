@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
@@ -128,6 +129,15 @@ export function LoginForm({ authConfigured }: { authConfigured: boolean }) {
                 {loading ? "Signing in..." : "Open portal"}
               </button>
             </form>
+
+            <div className="mt-4 text-center text-sm">
+              <Link
+                href="/forgot-password"
+                className="text-slate-500 transition hover:text-slate-900"
+              >
+                Forgot password?
+              </Link>
+            </div>
           </div>
         </div>
       </section>
