@@ -23,11 +23,8 @@ export function isOwner(actor: PortalActor | null) {
   return actor?.role === "Owner";
 }
 
-export function canViewCustomer(actor: PortalActor, customer: Customer) {
-  if (actor.role === "Owner") return true;
-
-  const assignedStaff = customer.assignedStaff.toLowerCase().trim();
-  return assignedStaff === actor.email || assignedStaff === actor.name.toLowerCase().trim();
+export function canViewCustomer(_actor: PortalActor, _customer: Customer) {
+  return true;
 }
 
 export function canUpdateStatus(actor: PortalActor, status: LeadStatus) {
